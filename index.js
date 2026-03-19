@@ -1,13 +1,16 @@
-const express = require("express");
-const { default: subjectRoute } = require("./routes/subject.route");
-const cors = require("cors");
+import express from "express";
+import subjectRoute from "./routes/subject.route.js";
+import cors from "cors";
+import dotenv from "dotenv";
+import morgan from "morgan";
+import path from "path";
+import stdRoute from "./routes/std.route.js";
+import pRouter from "./routes/professor.route.js";
+import dbRouter from "./routes/dashboard.route.js";
+
+dotenv.config();
+
 const app = express();
-require("dotenv").config();
-const morgan = require("morgan");
-const path = require("path");
-const { default: stdRoute } = require("./routes/std.route.js");
-const { default: pRouter } = require("./routes/professor.route.js");
-const { default: dbRouter } = require("./routes/dashboard.route.js");
 
 app.use(cors());
 app.use(express.json());
@@ -17,12 +20,13 @@ app.use(subjectRoute);
 app.use(stdRoute);
 app.use(pRouter);
 app.use(dbRouter);
+
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
-app.get("/health", async (req, res) => {
+app.get("/health", (req, res) => {
   res.json({ status: "OK" });
 });
 
-app.listen(5000, () => {
+app.listen(process.env.PORT || 5000, () => {
   console.log("Server start at port : 5000");
 });
